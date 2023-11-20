@@ -16,6 +16,6 @@ func Setup(router *gin.Engine, services *services.Services) {
 	router.GET("/health", handlers.Health)
 	router.NoRoute(handlers.NoRoute)
 
-	router.POST("/menus", menuHandler.Create)
+	router.POST("/menus", menuHandler.Save)
 
 }

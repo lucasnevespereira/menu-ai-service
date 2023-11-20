@@ -18,8 +18,8 @@ func NewMenuHandler(service *services.MenuServiceImpl) *MenuHandler {
 	}
 }
 
-func (h *MenuHandler) Create(c *gin.Context) {
-	var request models.MenuRequest
+func (h *MenuHandler) Save(c *gin.Context) {
+	var request models.MenuSaveRequest
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -29,7 +29,7 @@ func (h *MenuHandler) Create(c *gin.Context) {
 		return
 	}
 
-	created, err := h.menuService.Create(c, request)
+	created, err := h.menuService.Save(c, request)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":  err.Error(),
@@ -38,7 +38,7 @@ func (h *MenuHandler) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Menu was created with id %s", created.ID),
+		"message": fmt.Sprintf("Menu was saved with id %s", created.ID),
 		"status":  http.StatusOK,
 	})
 }

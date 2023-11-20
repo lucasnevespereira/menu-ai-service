@@ -2,15 +2,13 @@ package services
 
 import (
 	"context"
-	"encoding/json"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"menu-ai-service/internal/models"
 	"menu-ai-service/internal/store"
 )
 
 type MenuService interface {
-	Create(ctx context.Context, request models.MenuRequest) (*models.Menu, error)
+	Save(ctx context.Context, request models.MenuSaveRequest) (*models.Menu, error)
 }
 
 type MenuServiceImpl struct {
@@ -26,13 +24,12 @@ func NewMenuService(store *store.MenuStore) *MenuServiceImpl {
 	}
 }
 
-func (s *MenuServiceImpl) Create(ctx context.Context, request models.MenuRequest) (*models.Menu, error) {
-
-	row := store.MenuRow{
+func (s *MenuServiceImpl) Save(ctx context.Context, request models.MenuSaveRequest) (*models.Menu, error) {
+	row := &store.MenuRow{
 		ID:           primitive.NewObjectID(),
-		Content:      bson.Raw(request.Content),
-		ShoppingList: bson.Raw(request.ShoppingList),
-		Specs: store.MenuSpecsRow{
+		Content:      request.Content,
+		ShoppingList: request.ShoppingList,
+		Specs: &store.MenuSpecsRow{
 			MaxCalories: request.Specs.MaxCalories,
 			MaxCarbs:    request.Specs.MaxCarbs,
 			MaxProteins: request.Specs.MaxProteins,
@@ -41,15 +38,15 @@ func (s *MenuServiceImpl) Create(ctx context.Context, request models.MenuRequest
 		},
 	}
 
-	inserted, err := s.store.Create(ctx, row)
+	inserted, err := s.store.Insert(ctx, row)
 	if err != nil {
 		return nil, err
 	}
 
 	return &models.Menu{
-		ID:           inserted.ID.String(),
-		Content:      json.RawMessage(inserted.Content),
-		ShoppingList: json.RawMessage(inserted.ShoppingList),
+		ID:           inserted.ID.Hex(),
+		Content:      inserted.Content,
+		ShoppingList: inserted.ShoppingList,
 		Specs: models.MenuSpecs{
 			MaxCalories: inserted.Specs.MaxCalories,
 			MaxCarbs:    inserted.Specs.MaxCarbs,

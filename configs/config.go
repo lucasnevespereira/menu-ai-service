@@ -2,7 +2,6 @@ package configs
 
 import (
 	"github.com/spf13/viper"
-	"os"
 )
 
 type Config struct {
@@ -15,9 +14,10 @@ type Config struct {
 func Load() Config {
 	viper.SetConfigFile(".env")
 	_ = viper.ReadInConfig()
+	viper.AutomaticEnv()
 
 	c := Config{}
-	c.DbUrl = os.Getenv("MONGO_URL")
+	c.DbUrl = viper.GetString("MONGO_URL")
 	c.DbUsersCollection = "users"
 	c.DbMenusCollection = "menus"
 	c.DbName = "menuai"

@@ -20,7 +20,7 @@ func InitServices(config configs.Config) *Services {
 		},
 	)
 	if err != nil {
-		log.Printf("could not init store: %v \n", err)
+		log.Printf("InitServices: could not init menu store: %v \n", err)
 	}
 
 	return &Services{

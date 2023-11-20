@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"github.com/pkg/errors"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,9 +11,9 @@ import (
 
 type MenuRow struct {
 	ID           primitive.ObjectID `bson:"_id, omitempty"`
-	Content      bson.Raw           `bson:"content, omitempty"`
-	ShoppingList bson.Raw           `bson:"shopping_list, omitempty"`
-	Specs        MenuSpecsRow       `son:"specs, omitempty"`
+	Content      string             `bson:"content, omitempty"`
+	ShoppingList string             `bson:"shopping_list, omitempty"`
+	Specs        *MenuSpecsRow      `son:"specs, omitempty"`
 }
 
 type MenuSpecsRow struct {
@@ -45,7 +44,7 @@ func NewMenuStore(ctx context.Context, conf MenuStoreConfig) (*MenuStore, error)
 	return &MenuStore{client: client, conf: conf}, nil
 }
 
-func (s *MenuStore) Create(ctx context.Context, row MenuRow) (*MenuRow, error) {
+func (s *MenuStore) Insert(ctx context.Context, row *MenuRow) (*MenuRow, error) {
 	menuCol := s.client.Database(s.conf.Database).Collection(s.conf.Collection)
 	one, err := menuCol.InsertOne(ctx, row)
 
@@ -55,5 +54,5 @@ func (s *MenuStore) Create(ctx context.Context, row MenuRow) (*MenuRow, error) {
 
 	log.Printf("inserted menu with %s \n", one.InsertedID)
 
-	return &row, nil
+	return row, nil
 }
