@@ -12,11 +12,11 @@ type Services struct {
 }
 
 func InitServices(config configs.Config) *Services {
-	storeClient, err := store.NewStoreClient(context.Background(),
-		store.Config{
-			URL:      config.DbUrl,
-			UsersCol: config.DbUsersCollection,
-			MenusCol: config.DbMenusCollection,
+	menuStore, err := store.NewMenuStore(context.Background(),
+		store.MenuStoreConfig{
+			Database:   config.DbName,
+			URL:        config.DbUrl,
+			Collection: config.DbMenusCollection,
 		},
 	)
 	if err != nil {
@@ -24,7 +24,7 @@ func InitServices(config configs.Config) *Services {
 	}
 
 	return &Services{
-		MenuService: NewMenuService(storeClient),
+		MenuService: NewMenuService(menuStore),
 	}
 
 }

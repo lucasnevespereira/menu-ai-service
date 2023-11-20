@@ -9,6 +9,7 @@ type Config struct {
 	DbUrl             string
 	DbUsersCollection string
 	DbMenusCollection string
+	DbName            string
 }
 
 func Load() Config {
@@ -19,6 +20,7 @@ func Load() Config {
 	c.DbUrl = os.Getenv("MONGO_URL")
 	c.DbUsersCollection = "users"
 	c.DbMenusCollection = "menus"
+	c.DbName = "menuai"
 
 	return c
 }
