@@ -47,11 +47,24 @@ func (h *MenuHandler) GetMenusByUserID(c *gin.Context) {
 	userID := c.Param("userID")
 	menus, err := h.menuService.GetByUserID(c, userID)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, menus)
+}
+
+func (h *MenuHandler) DeleteMenuByID(c *gin.Context) {
+	menuID := c.Param("id")
+	err := h.menuService.DeleteByID(c, menuID)
+	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": http.StatusNotFound,
 			"error":  err.Error(),
 		})
 	}
 
-	c.JSON(http.StatusOK, menus)
+	c.JSON(http.StatusOK, gin.H{})
 }

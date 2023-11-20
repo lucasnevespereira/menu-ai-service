@@ -9,6 +9,8 @@ import (
 
 type MenuService interface {
 	Save(ctx context.Context, request models.MenuSaveRequest) (*models.Menu, error)
+	DeleteByID(ctx context.Context, menuID string) error
+	GetByUserID(ctx context.Context, userID string) ([]*models.Menu, error)
 }
 
 type MenuServiceImpl struct {
@@ -57,6 +59,14 @@ func (s *MenuServiceImpl) Save(ctx context.Context, request models.MenuSaveReque
 		},
 		UserID: inserted.UserID,
 	}, nil
+}
+
+func (s *MenuServiceImpl) DeleteByID(ctx context.Context, menuID string) error {
+	err := s.store.Delete(ctx, menuID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *MenuServiceImpl) GetByUserID(ctx context.Context, userID string) ([]*models.Menu, error) {

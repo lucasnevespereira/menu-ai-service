@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -78,4 +79,13 @@ func (s *MenuStore) GetByUserID(ctx context.Context, userID string) ([]*MenuRow,
 	}
 
 	return results, nil
+}
+
+func (s *MenuStore) Delete(ctx context.Context, menuID string) error {
+	_, err := s.collection.DeleteOne(ctx, menuID)
+	if err != nil {
+		return errors.Wrapf(err, fmt.Sprintf("delete menu with id %s", menuID))
+	}
+
+	return nil
 }
