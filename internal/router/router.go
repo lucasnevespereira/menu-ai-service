@@ -17,5 +17,6 @@ func Setup(router *gin.Engine, services *services.Services) {
 	router.NoRoute(handlers.NoRoute)
 
 	router.POST("/menus", menuHandler.Save)
-
+	router.GET("/menus/:userID", menuHandler.GetMenusByUserID)
+	router.DELETE("/menus/:id")
 }

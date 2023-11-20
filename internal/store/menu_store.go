@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"github.com/pkg/errors"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -13,7 +14,8 @@ type MenuRow struct {
 	ID           primitive.ObjectID `bson:"_id, omitempty"`
 	Content      string             `bson:"content, omitempty"`
 	ShoppingList string             `bson:"shopping_list, omitempty"`
-	Specs        *MenuSpecsRow      `son:"specs, omitempty"`
+	Specs        *MenuSpecsRow      `bson:"specs, omitempty"`
+	UserID       string             `bson:"userID"`
 }
 
 type MenuSpecsRow struct {
@@ -25,8 +27,9 @@ type MenuSpecsRow struct {
 }
 
 type MenuStore struct {
-	client *mongo.Client
-	conf   MenuStoreConfig
+	client     *mongo.Client
+	conf       MenuStoreConfig
+	collection *mongo.Collection
 }
 
 type MenuStoreConfig struct {
@@ -41,12 +44,13 @@ func NewMenuStore(ctx context.Context, conf MenuStoreConfig) (*MenuStore, error)
 		return nil, err
 	}
 
-	return &MenuStore{client: client, conf: conf}, nil
+	menusCollection := client.Database(conf.Database).Collection(conf.Collection)
+
+	return &MenuStore{client: client, conf: conf, collection: menusCollection}, nil
 }
 
 func (s *MenuStore) Insert(ctx context.Context, row *MenuRow) (*MenuRow, error) {
-	menuCol := s.client.Database(s.conf.Database).Collection(s.conf.Collection)
-	one, err := menuCol.InsertOne(ctx, row)
+	one, err := s.collection.InsertOne(ctx, row)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "inserting menu")
@@ -55,4 +59,23 @@ func (s *MenuStore) Insert(ctx context.Context, row *MenuRow) (*MenuRow, error) 
 	log.Printf("inserted menu with %s \n", one.InsertedID)
 
 	return row, nil
+}
+
+func (s *MenuStore) GetByUserID(ctx context.Context, userID string) ([]*MenuRow, error) {
+	var results []*MenuRow
+	find, err := s.collection.Find(ctx, bson.E{Key: "userID", Value: userID})
+	if err != nil {
+		return nil, errors.Wrapf(err, "get menus by userID")
+	}
+
+	for find.Next(ctx) {
+		var m MenuRow
+		err := find.Decode(&m)
+		if err != nil {
+			log.Println(err)
+		}
+		results = append(results, &m)
+	}
+
+	return results, nil
 }

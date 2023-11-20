@@ -42,3 +42,16 @@ func (h *MenuHandler) Save(c *gin.Context) {
 		"status":  http.StatusOK,
 	})
 }
+
+func (h *MenuHandler) GetMenusByUserID(c *gin.Context) {
+	userID := c.Param("userID")
+	menus, err := h.menuService.GetByUserID(c, userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, menus)
+}

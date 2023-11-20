@@ -5,6 +5,7 @@ type Menu struct {
 	Content      string    `json:"content"`
 	ShoppingList string    `json:"shoppingList"`
 	Specs        MenuSpecs `json:"specs"`
+	UserID       string    `json:"userID"`
 }
 
 type MenuSpecs struct {
@@ -19,4 +20,5 @@ type MenuSaveRequest struct {
 	Content      string    `json:"content"`
 	ShoppingList string    `json:"shoppingList"`
 	Specs        MenuSpecs `json:"specs"`
+	UserID       string    `json:"userID"`
 }
