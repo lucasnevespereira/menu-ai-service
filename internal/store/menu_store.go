@@ -64,25 +64,41 @@ func (s *MenuStore) Insert(ctx context.Context, row *MenuRow) (*MenuRow, error) 
 
 func (s *MenuStore) GetByUserID(ctx context.Context, userID string) ([]*MenuRow, error) {
 	var results []*MenuRow
-	find, err := s.collection.Find(ctx, bson.E{Key: "userID", Value: userID})
+
+	// Define a filter to match documents by userID
+	filter := bson.M{"userID": userID}
+
+	cursor, err := s.collection.Find(ctx, filter)
 	if err != nil {
 		return nil, errors.Wrapf(err, "get menus by userID")
 	}
+	defer cursor.Close(ctx)
 
-	for find.Next(ctx) {
+	for cursor.Next(ctx) {
 		var m MenuRow
-		err := find.Decode(&m)
-		if err != nil {
+		if err := cursor.Decode(&m); err != nil {
 			log.Println(err)
+			continue // Skip current iteration on error
 		}
 		results = append(results, &m)
 	}
+
+	log.Printf("results: %v \n", results)
 
 	return results, nil
 }
 
 func (s *MenuStore) Delete(ctx context.Context, menuID string) error {
-	_, err := s.collection.DeleteOne(ctx, menuID)
+	// Convert menuID string to a BSON ObjectID
+	objectID, err := primitive.ObjectIDFromHex(menuID)
+	if err != nil {
+		return errors.Wrap(err, "invalid ObjectID format")
+	}
+
+	// Construct a filter to match the menu by its ObjectID
+	filter := bson.M{"_id": objectID}
+
+	_, err = s.collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return errors.Wrapf(err, fmt.Sprintf("delete menu with id %s", menuID))
 	}

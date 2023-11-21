@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"menu-ai-service/internal/models"
 	"menu-ai-service/internal/services"
 	"net/http"
@@ -53,6 +54,8 @@ func (h *MenuHandler) GetMenusByUserID(c *gin.Context) {
 		})
 	}
 
+	log.Printf("menus %v \n", menus)
+
 	c.JSON(http.StatusOK, menus)
 }
 
@@ -60,11 +63,11 @@ func (h *MenuHandler) DeleteMenuByID(c *gin.Context) {
 	menuID := c.Param("id")
 	err := h.menuService.DeleteByID(c, menuID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"status": http.StatusNotFound,
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
 			"error":  err.Error(),
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("menu with id %s deleted", menuID)})
 }
