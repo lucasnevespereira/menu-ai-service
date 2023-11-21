@@ -45,6 +45,8 @@ func NewMenuStore(ctx context.Context, conf MenuStoreConfig) (*MenuStore, error)
 		return nil, err
 	}
 
+	log.Println("connected to store!")
+
 	menusCollection := client.Database(conf.Database).Collection(conf.Collection)
 
 	return &MenuStore{client: client, conf: conf, collection: menusCollection}, nil

@@ -3,23 +3,30 @@ package handlers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"menu-ai-service/internal/models"
 	"menu-ai-service/internal/services"
 	"net/http"
 )
 
-type MenuHandler struct {
+type Handler struct {
 	menuService *services.MenuServiceImpl
 }
 
-func NewMenuHandler(service *services.MenuServiceImpl) *MenuHandler {
-	return &MenuHandler{
-		menuService: service,
+func NewHandler(service *services.Services) *Handler {
+	return &Handler{
+		menuService: service.MenuService,
 	}
 }
 
-func (h *MenuHandler) Save(c *gin.Context) {
+func Health(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": "up"})
+}
+
+func NoRoute(c *gin.Context) {
+	c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "error": "Not Found"})
+}
+
+func (h *Handler) Save(c *gin.Context) {
 	var request models.MenuSaveRequest
 
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -44,7 +51,7 @@ func (h *MenuHandler) Save(c *gin.Context) {
 	})
 }
 
-func (h *MenuHandler) GetMenusByUserID(c *gin.Context) {
+func (h *Handler) GetMenusByUserID(c *gin.Context) {
 	userID := c.Param("userID")
 	menus, err := h.menuService.GetByUserID(c, userID)
 	if err != nil {
@@ -54,12 +61,10 @@ func (h *MenuHandler) GetMenusByUserID(c *gin.Context) {
 		})
 	}
 
-	log.Printf("menus %v \n", menus)
-
 	c.JSON(http.StatusOK, menus)
 }
 
-func (h *MenuHandler) DeleteMenuByID(c *gin.Context) {
+func (h *Handler) DeleteMenuByID(c *gin.Context) {
 	menuID := c.Param("id")
 	err := h.menuService.DeleteByID(c, menuID)
 	if err != nil {

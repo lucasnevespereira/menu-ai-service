@@ -11,7 +11,7 @@ func Setup(router *gin.Engine, services *services.Services) {
 
 	router.Use(cors.Default())
 
-	menuHandler := handlers.NewMenuHandler(services.MenuService)
+	menuHandler := handlers.NewHandler(services)
 
 	router.GET("/health", handlers.Health)
 	router.NoRoute(handlers.NoRoute)
