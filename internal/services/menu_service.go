@@ -37,6 +37,7 @@ func (s *MenuServiceImpl) Save(ctx context.Context, request models.MenuSaveReque
 			MaxProteins: request.Specs.MaxProteins,
 			MaxFats:     request.Specs.MaxFats,
 			Allergies:   request.Specs.Allergies,
+			Lang:        request.Specs.Lang,
 		},
 		UserID: request.UserID,
 	}
