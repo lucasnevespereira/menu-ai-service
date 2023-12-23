@@ -94,6 +94,7 @@ func toMenus(rowMenus []*store.MenuRow) []*models.Menu {
 				Allergies:   rowMenu.Specs.Allergies,
 			},
 			UserID: rowMenu.UserID,
+			Lang:   rowMenu.Lang,
 		})
 	}
 

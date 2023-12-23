@@ -17,6 +17,7 @@ type MenuRow struct {
 	ShoppingList string             `bson:"shopping_list, omitempty"`
 	Specs        *MenuSpecsRow      `bson:"specs, omitempty"`
 	UserID       string             `bson:"userID"`
+	Lang         string             `bson:"lang"`
 }
 
 type MenuSpecsRow struct {
