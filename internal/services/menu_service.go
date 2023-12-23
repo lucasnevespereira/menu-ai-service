@@ -92,9 +92,9 @@ func toMenus(rowMenus []*store.MenuRow) []*models.Menu {
 				MaxProteins: rowMenu.Specs.MaxProteins,
 				MaxFats:     rowMenu.Specs.MaxFats,
 				Allergies:   rowMenu.Specs.Allergies,
+				Lang:        rowMenu.Specs.Lang,
 			},
 			UserID: rowMenu.UserID,
-			Lang:   rowMenu.Lang,
 		})
 	}
 

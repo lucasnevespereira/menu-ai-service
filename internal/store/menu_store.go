@@ -17,7 +17,6 @@ type MenuRow struct {
 	ShoppingList string             `bson:"shopping_list, omitempty"`
 	Specs        *MenuSpecsRow      `bson:"specs, omitempty"`
 	UserID       string             `bson:"userID"`
-	Lang         string             `bson:"lang"`
 }
 
 type MenuSpecsRow struct {
@@ -26,6 +25,7 @@ type MenuSpecsRow struct {
 	MaxProteins string   `bson:"max_proteins,omitempty"`
 	MaxFats     string   `bson:"max_fats,omitempty"`
 	Allergies   []string `bson:"allergies,omitempty"`
+	Lang        string   `bson:"lang"`
 }
 
 type MenuStore struct {

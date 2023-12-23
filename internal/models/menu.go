@@ -6,7 +6,6 @@ type Menu struct {
 	ShoppingList string    `json:"shoppingList"`
 	Specs        MenuSpecs `json:"specs"`
 	UserID       string    `json:"userID"`
-	Lang         string    `json:"lang"`
 }
 
 type MenuSpecs struct {
@@ -15,6 +14,7 @@ type MenuSpecs struct {
 	MaxProteins string   `json:"maxProteins"`
 	MaxFats     string   `json:"maxFats"`
 	Allergies   []string `json:"allergies"`
+	Lang        string   `json:"lang"`
 }
 
 type MenuSaveRequest struct {
@@ -22,5 +22,4 @@ type MenuSaveRequest struct {
 	ShoppingList string    `json:"shoppingList"`
 	Specs        MenuSpecs `json:"specs"`
 	UserID       string    `json:"userID"`
-	Lang         string    `json:"lang"`
 }
