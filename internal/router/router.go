@@ -19,4 +19,5 @@ func Setup(router *gin.Engine, services *services.Services) {
 	router.POST("/menus", menuHandler.Save)
 	router.GET("/menus/:userID", menuHandler.GetMenusByUserID)
 	router.DELETE("/menus/:id", menuHandler.DeleteMenuByID)
+	router.DELETE("/menus/user/:userID", menuHandler.DeleteMenusByUserID)
 }

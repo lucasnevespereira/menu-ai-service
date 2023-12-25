@@ -108,3 +108,14 @@ func (s *MenuStore) Delete(ctx context.Context, menuID string) error {
 
 	return nil
 }
+
+func (s *MenuStore) DeleteAllByUserID(ctx context.Context, userID string) error {
+	filter := bson.M{"userID": userID}
+
+	_, err := s.collection.DeleteMany(ctx, filter)
+	if err != nil {
+		return errors.Wrapf(err, fmt.Sprintf("delete menus with userID %s", userID))
+	}
+
+	return nil
+}

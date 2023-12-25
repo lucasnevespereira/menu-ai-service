@@ -76,3 +76,16 @@ func (h *Handler) DeleteMenuByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("menu with id %s deleted", menuID)})
 }
+
+func (h *Handler) DeleteMenusByUserID(c *gin.Context) {
+	userID := c.Param("userID")
+	err := h.menuService.DeleteAllByUserID(c, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("menus deleted for user with id %s", userID)})
+}

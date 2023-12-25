@@ -70,6 +70,14 @@ func (s *MenuServiceImpl) DeleteByID(ctx context.Context, menuID string) error {
 	return nil
 }
 
+func (s *MenuServiceImpl) DeleteAllByUserID(ctx context.Context, userID string) error {
+	err := s.store.DeleteAllByUserID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *MenuServiceImpl) GetByUserID(ctx context.Context, userID string) ([]*models.Menu, error) {
 	rowMenus, err := s.store.GetByUserID(ctx, userID)
 	if err != nil {
